@@ -1,5 +1,5 @@
 import express from "express";
-import { Staff } from "../modal/staff";
+import { Staff } from "../models/staff";
 const staff = express.Router();
 
 
