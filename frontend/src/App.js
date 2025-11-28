@@ -10,6 +10,7 @@ import CreateShift from "./pages/CreateShift";
 import ShiftList from "./pages/ShiftList";
 import AssignStaff from "./pages/AssignStaff";
 import Attendance from "./pages/Attendance";
+import StaffList from "./pages/StaffList";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -104,6 +105,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Attendance />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/staff"
+        element={
+          <ProtectedRoute>
+            <StaffList />
           </ProtectedRoute>
         }
       />
