@@ -40,3 +40,5 @@ staff.delete('/staff:staffNumber', async (req, res) => {
   }
   res.status(200).json({ "data": response });
 });
+
+export default staff;
