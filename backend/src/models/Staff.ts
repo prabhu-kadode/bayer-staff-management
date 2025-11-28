@@ -6,6 +6,7 @@ interface StaffAttributes {
   staffName: string;
   contactNumber: string;
   email?: string | null;
+  role: string | null;
   preferredShift: string;
 }
 
@@ -20,6 +21,7 @@ export class Staff
   public staffName!: string;
   public contactNumber!: string;
   public email!: string | null;
+  public role!: string | null;
   public preferredShift!: string;
 }
 
@@ -39,6 +41,10 @@ Staff.init(
       allowNull: false,
     },
     email: {
+      type: DataTypes.STRING,
+      allowNull: true, // optional
+    },
+    role: {
       type: DataTypes.STRING,
       allowNull: true, // optional
     },

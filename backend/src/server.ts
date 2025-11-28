@@ -4,6 +4,8 @@ import healthRoute from './routes/health';
 import attendance from './routes/attendecne'; // double-check spelling
 import shift from './routes/shifts'
 import Shift from "./models/Shifts";
+
+import { Staff } from "./models/Staff";
 import staff from "./routes/staff";
 const app = express();
 const PORT = 3000;
@@ -22,6 +24,7 @@ app.use('/',staff);
     await sequelize.authenticate();
     console.log('✅ PostgreSQL database connected successfully!');
     await Shift.sync(); 
+    await Staff.sync();
 
     app.listen(PORT,'0.0.0.0',() => {
       console.log(`Server running at http://localhost:${PORT}`);
