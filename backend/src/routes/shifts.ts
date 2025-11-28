@@ -17,4 +17,15 @@ shiftRouter.post("/shifts",async (req,res)=>{
   }
 })
 
+shiftRouter.get("/shifts",async (req,res)=>{
+  try {
+    
+    const shiftdata = await Shift.findAll();
+    res.status(200).json(shiftdata);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Failed to create shift' });
+  }
+})
+
 export default shiftRouter
