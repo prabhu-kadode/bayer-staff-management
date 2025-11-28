@@ -4,13 +4,19 @@ const staff = express.Router();
 
 
 staff.post('/staff', async (req, res) => {
+  try {
   await Staff.create({
-    staffName: req.body.name,
-    contactNumber: req.body.number,
+    staffName: req.body.staffName,
+    contactNumber: req.body.contactNumber,
     email: req.body.email,
-    preferredShift: req.body.shift,
+    role: req.body.role,
+    preferredShift: req.body.preferredShift,
   });
   res.status(200).json({ "status": "Created" });
+} catch(e){
+  console.log(e)
+  res.status(500).json("internal server error")
+}
 });
 
 
