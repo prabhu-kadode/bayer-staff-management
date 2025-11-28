@@ -5,6 +5,7 @@ import attendance from './routes/attendecne'; // double-check spelling
 import shift from './routes/shifts'
 import Shift from "./models/Shifts";
 import staff from "./routes/staff";
+import shiftAssignment from "./routes/ShiftAssignment";
 const app = express();
 const PORT = 3000;
 
@@ -16,6 +17,8 @@ app.use('/', healthRoute);
 app.use('/', attendance);
 app.use('/',shift);
 app.use('/',staff);
+app.use('/',shiftAssignment);
+
 // Test DB connection before starting server
 (async () => {
   try {
