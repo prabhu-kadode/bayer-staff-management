@@ -3,19 +3,7 @@ import { Staff } from "../modal/staff";
 const staff = express.Router();
 
 
-
-staff.post('/', async (req: any, res) => {
-  await Staff.create({
-    staffName: req.body.name,
-    contactNumber: req.body.phoneNumber,
-    email: req.body.email,
-    preferredShift: req.body.shift,
-  });
-  res.status(200).json({ "status": "Created" });
-});
-
-
-staff.post('/', async (req, res) => {
+staff.post('/staff', async (req, res) => {
   await Staff.create({
     staffName: "Rahul Sharma",
     contactNumber: "9876543210",
