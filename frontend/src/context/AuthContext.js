@@ -2,11 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
-// Mock credentials (works without backend)
-const VALID_CREDENTIALS = {
-  email: "admin@bayer.com",
-  password: "admin123",
-};
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -14,57 +10,58 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Initialize from localStorage on mount
+  // Initialize from localStorage on mount and verify token with backend
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
-    const savedUser = localStorage.getItem("user");
-
-    if (savedToken && savedUser) {
+    if (savedToken) {
       setToken(savedToken);
-      setUser(JSON.parse(savedUser));
+      // Verify token and load user
+      fetch(`${API_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${savedToken}` },
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data && data.user) {
+            setUser(data.user);
+            localStorage.setItem("user", JSON.stringify(data.user));
+          } else {
+            setToken(null);
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+          }
+        })
+        .catch(() => {
+          setToken(null);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        });
     }
   }, []);
 
   const login = async (email, password) => {
     setLoading(true);
     setError(null);
-
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
     try {
-      // Mock authentication - validate against hardcoded credentials
-      if (
-        email === VALID_CREDENTIALS.email &&
-        password === VALID_CREDENTIALS.password
-      ) {
-        // Generate a mock token
-        const mockToken = "mock_jwt_token_" + Date.now();
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-        // Create user object
-        const userData = {
-          id: "admin-001",
-          email: email,
-          firstName: "Admin",
-          lastName: "User",
-          role: "admin",
-        };
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Login failed");
 
-        // Save to localStorage
-        localStorage.setItem("token", mockToken);
-        localStorage.setItem("user", JSON.stringify(userData));
+      const { token: receivedToken, user: userData } = data;
+      localStorage.setItem("token", receivedToken);
+      localStorage.setItem("user", JSON.stringify(userData));
+      setToken(receivedToken);
+      setUser(userData);
 
-        // Update state
-        setToken(mockToken);
-        setUser(userData);
-
-        return { success: true };
-      } else {
-        throw new Error("Invalid email or password");
-      }
+      return { success: true };
     } catch (err) {
-      setError(err.message);
-      return { success: false, error: err.message };
+      const message = err.message || "Login failed";
+      setError(message);
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }
@@ -73,34 +70,27 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password, firstName, lastName) => {
     setLoading(true);
     setError(null);
-
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
     try {
-      // Mock registration - create user without backend
-      const mockToken = "mock_jwt_token_" + Date.now();
+      const res = await fetch(`${API_URL}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, firstName, lastName }),
+      });
 
-      const userData = {
-        id: "user_" + Date.now(),
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        role: "user",
-      };
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Registration failed");
 
-      // Save to localStorage
-      localStorage.setItem("token", mockToken);
+      const { token: receivedToken, user: userData } = data;
+      localStorage.setItem("token", receivedToken);
       localStorage.setItem("user", JSON.stringify(userData));
-
-      // Update state
-      setToken(mockToken);
+      setToken(receivedToken);
       setUser(userData);
 
       return { success: true };
     } catch (err) {
-      setError(err.message);
-      return { success: false, error: err.message };
+      const message = err.message || "Registration failed";
+      setError(message);
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }

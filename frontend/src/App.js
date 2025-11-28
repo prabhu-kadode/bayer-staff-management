@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import Layout from "./components/Layout";
 
 // Pages
 import Login from "./pages/Login";
@@ -72,7 +73,9 @@ function AppRoutes() {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <Layout>
+              <Dashboard />
+            </Layout>
           </ProtectedRoute>
         }
       />
@@ -80,7 +83,9 @@ function AppRoutes() {
         path="/shifts"
         element={
           <ProtectedRoute>
-            <ShiftList />
+            <Layout>
+              <ShiftList />
+            </Layout>
           </ProtectedRoute>
         }
       />
@@ -88,7 +93,9 @@ function AppRoutes() {
         path="/create-shift"
         element={
           <ProtectedRoute>
-            <CreateShift />
+            <Layout>
+              <CreateShift />
+            </Layout>
           </ProtectedRoute>
         }
       />
@@ -96,7 +103,9 @@ function AppRoutes() {
         path="/assign-staff/:shiftId"
         element={
           <ProtectedRoute>
-            <AssignStaff />
+            <Layout>
+              <AssignStaff />
+            </Layout>
           </ProtectedRoute>
         }
       />
@@ -104,7 +113,9 @@ function AppRoutes() {
         path="/attendance/:shiftId"
         element={
           <ProtectedRoute>
-            <Attendance />
+            <Layout>
+              <Attendance />
+            </Layout>
           </ProtectedRoute>
         }
       />
@@ -112,7 +123,9 @@ function AppRoutes() {
         path="/staff"
         element={
           <ProtectedRoute>
-            <StaffList />
+            <Layout>
+              <StaffList />
+            </Layout>
           </ProtectedRoute>
         }
       />
