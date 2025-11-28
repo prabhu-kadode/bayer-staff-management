@@ -1,9 +1,9 @@
 import express from "express";
 
-const healthApp = express();
+const healthRoute = express.Router();
 
-healthApp.get("/health", (req: any, res: any) => {
+healthRoute.get("/health", (req: any, res: any) => {
   res.send("Hello from TypeScript + Express!");
 });
 
-export default healthApp;
+export default healthRoute;
