@@ -28,6 +28,7 @@ ShiftAssignment.init(
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement:true
     },
     staffId: {
       type: DataTypes.INTEGER,
