@@ -85,18 +85,16 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-white shadow-sm border-b-2 border-blue-600">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">
+        <div className="w-full px-6 py-2 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold text-gray-800">
               Healthcare Staff Management
             </h1>
-            <p className="text-gray-600 text-sm mt-0.5">
-              Welcome, {user?.firstName} {user?.lastName}
-            </p>
+            <p className="text-gray-600 text-xs">Welcome, {user?.firstName}</p>
           </div>
           <button
             onClick={handleLogout}
-            className="bg-red-500 text-white font-semibold px-3 py-1.5 rounded-md hover:bg-red-600 transition text-sm"
+            className="bg-red-500 text-white font-semibold px-2 py-1 rounded-md hover:bg-red-600 transition text-sm"
           >
             Logout
           </button>
@@ -104,8 +102,8 @@ const Dashboard = () => {
       </div>
 
       {/* Navigation */}
-      <div className="sticky top-14 z-30 bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-2">
+      <div className="sticky top-10 z-30 bg-white border-b border-gray-200 shadow-sm">
+        <div className="w-full px-6 py-1">
           <div className="flex gap-2 overflow-x-auto">
             <button
               onClick={() => navigate("/dashboard")}
@@ -136,7 +134,7 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="w-full px-6 py-2">
         {/* Error Message */}
         {error && (
           <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
@@ -147,33 +145,33 @@ const Dashboard = () => {
         {dashboardData && (
           <>
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
               {/* Total Staff */}
-              <div className="bg-white rounded shadow-sm p-4 border-l-4 border-blue-600">
+              <div className="bg-white rounded shadow-sm p-2 border-l-4 border-blue-600">
                 <p className="text-gray-600 text-sm font-semibold">
                   Total Staff
                 </p>
-                <p className="text-2xl font-bold text-blue-600 mt-1">
+                <p className="text-xl font-bold text-blue-600 mt-1">
                   {dashboardData.totalStaff || 0}
                 </p>
               </div>
 
               {/* Assigned Today */}
-              <div className="bg-white rounded shadow-sm p-4 border-l-4 border-green-600">
+              <div className="bg-white rounded shadow-sm p-2 border-l-4 border-green-600">
                 <p className="text-gray-600 text-sm font-semibold">
                   Assigned Today
                 </p>
-                <p className="text-2xl font-bold text-green-600 mt-1">
+                <p className="text-xl font-bold text-green-600 mt-1">
                   {dashboardData.assignedToday || 0}
                 </p>
               </div>
 
               {/* Attendance Rate */}
-              <div className="bg-white rounded shadow-sm p-4 border-l-4 border-purple-600">
+              <div className="bg-white rounded shadow-sm p-2 border-l-4 border-purple-600">
                 <p className="text-gray-600 text-sm font-semibold">
                   Attendance Rate
                 </p>
-                <p className="text-2xl font-bold text-purple-600 mt-1">
+                <p className="text-xl font-bold text-purple-600 mt-1">
                   {typeof dashboardData.attendanceRate === "number"
                     ? dashboardData.attendanceRate.toFixed(1)
                     : 0}
@@ -182,134 +180,140 @@ const Dashboard = () => {
               </div>
 
               {/* Today's Shifts */}
-              <div className="bg-white rounded shadow-sm p-4 border-l-4 border-yellow-600">
+              <div className="bg-white rounded shadow-sm p-2 border-l-4 border-yellow-600">
                 <p className="text-gray-600 text-sm font-semibold">
                   Today's Shifts
                 </p>
-                <p className="text-2xl font-bold text-yellow-600 mt-1">
+                <p className="text-xl font-bold text-yellow-600 mt-1">
                   {todayShifts.length || 0}
                 </p>
               </div>
             </div>
 
             {/* Shift Calendar View */}
-            <div className="mb-6">
+            <div className="mb-3">
               <ShiftCalendar />
             </div>
 
             {/* Today's Shifts Details */}
-            <div className="bg-white rounded shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">
+            <div className="bg-white rounded shadow-sm p-4">
+              <h2 className="text-lg font-bold text-gray-800 mb-2">
                 Today's Shifts
               </h2>
 
-              {todayShifts.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {todayShifts.map((shift) => {
-                    const available = Math.max(
-                      0,
-                      shift.capacity - (shift.assignedCount || 0)
-                    );
-                    const fillPercentage = (
-                      ((shift.assignedCount || 0) / shift.capacity) *
-                      100
-                    ).toFixed(0);
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {["Morning", "Afternoon", "Night"].map((slotType) => {
+                  const shift = (todayShifts || []).find(
+                    (s) => s.type === slotType
+                  );
+                  const assignedCount = shift ? shift.assignedCount || 0 : 0;
+                  const capacity = shift ? shift.capacity || 2 : 2;
+                  const available = Math.max(0, capacity - assignedCount);
+                  const fillPercentage = shift
+                    ? ((assignedCount / capacity) * 100).toFixed(0)
+                    : 0;
+                  const displayTitle =
+                    slotType === "Night"
+                      ? "Evening Shift"
+                      : `${slotType} Shift`;
+                  const badgeLabel =
+                    slotType === "Night" ? "Evening" : slotType;
 
-                    return (
-                      <div
-                        key={shift.id}
-                        className="bg-white rounded p-4 border border-gray-200 hover:shadow transition"
-                      >
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <p className="text-sm text-gray-600">
-                              {formatDate(shift.date)}
-                            </p>
-                            <p className="text-xl font-bold text-gray-800 mt-1">
-                              {shift.type} Shift
-                            </p>
-                          </div>
-                          <span
-                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                              shift.type === "Morning"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : shift.type === "Afternoon"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-purple-100 text-purple-800"
-                            }`}
-                          >
-                            {shift.type}
+                  return (
+                    <div
+                      key={slotType}
+                      className="bg-white rounded p-2 border border-gray-200 hover:shadow transition"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <p className="text-xs text-gray-600">
+                            {formatDate(new Date().toISOString())}
+                          </p>
+                          <p className="text-lg font-bold text-gray-800 mt-1">
+                            {displayTitle}
+                          </p>
+                        </div>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                            slotType === "Morning"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : slotType === "Afternoon"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-purple-100 text-purple-800"
+                          }`}
+                        >
+                          {badgeLabel}
+                        </span>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="mb-2">
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm font-semibold text-gray-700">
+                            Staff Assigned
+                          </span>
+                          <span className="text-sm font-bold text-gray-700">
+                            {assignedCount} / {capacity}
                           </span>
                         </div>
-
-                        {/* Progress Bar */}
-                        <div className="mb-3">
-                          <div className="flex justify-between mb-2">
-                            <span className="text-sm font-semibold text-gray-700">
-                              Staff Assigned
-                            </span>
-                            <span className="text-sm font-bold text-gray-700">
-                              {shift.assignedCount || 0} / {shift.capacity}
-                            </span>
-                          </div>
-                          <div className="w-full bg-gray-300 rounded-full h-2">
-                            <div
-                              className="bg-blue-600 h-2 rounded-full transition-all"
-                              style={{ width: `${fillPercentage}%` }}
-                            ></div>
-                          </div>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="bg-white rounded p-2 text-center">
-                            <p className="text-xs text-gray-600">Assigned</p>
-                            <p className="text-base font-bold text-blue-600">
-                              {shift.assignedCount || 0}
-                            </p>
-                          </div>
-                          <div className="bg-white rounded p-2 text-center">
-                            <p className="text-xs text-gray-600">Available</p>
-                            <p className="text-base font-bold text-green-600">
-                              {available}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="mt-3 flex gap-2">
-                          <button
-                            onClick={() =>
-                              navigate(`/assign-staff/${shift.id}`)
-                            }
-                            className="flex-1 bg-blue-500 text-white text-sm font-semibold px-2 py-1.5 rounded hover:bg-blue-600 transition"
-                          >
-                            Assign
-                          </button>
-                          <button
-                            onClick={() => navigate(`/attendance/${shift.id}`)}
-                            className="flex-1 bg-green-500 text-white text-sm font-semibold px-2 py-1.5 rounded hover:bg-green-600 transition"
-                          >
-                            Attendance
-                          </button>
+                        <div className="w-full bg-gray-300 rounded-full h-1">
+                          <div
+                            className="bg-blue-600 h-1 rounded-full transition-all"
+                            style={{ width: `${fillPercentage}%` }}
+                          ></div>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-6">
-                  <p className="text-gray-600 text-base mb-3">
-                    No shifts scheduled for today
-                  </p>
-                  <button
-                    onClick={() => navigate("/create-shift")}
-                    className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-md hover:shadow transition text-sm"
-                  >
-                    Create a Shift
-                  </button>
-                </div>
-              )}
+
+                      {/* Stats */}
+                      <div className="grid grid-cols-2 gap-1">
+                        <div className="bg-white rounded p-1 text-center">
+                          <p className="text-[11px] text-gray-600">Assigned</p>
+                          <p className="text-sm font-bold text-blue-600">
+                            {assignedCount}
+                          </p>
+                        </div>
+                        <div className="bg-white rounded p-1 text-center">
+                          <p className="text-[11px] text-gray-600">Available</p>
+                          <p className="text-sm font-bold text-green-600">
+                            {available}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="mt-2 flex gap-2">
+                        {shift ? (
+                          <>
+                            <button
+                              onClick={() =>
+                                navigate(`/assign-staff/${shift.id}`)
+                              }
+                              className="flex-1 bg-blue-500 text-white text-xs font-semibold px-1 py-1 rounded hover:bg-blue-600 transition"
+                            >
+                              Assign
+                            </button>
+                            <button
+                              onClick={() =>
+                                navigate(`/attendance/${shift.id}`)
+                              }
+                              className="flex-1 bg-green-500 text-white text-xs font-semibold px-1 py-1 rounded hover:bg-green-600 transition"
+                            >
+                              Attendance
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => navigate("/create-shift")}
+                            className="w-full bg-blue-600 text-white font-semibold px-3 py-1 rounded-md hover:shadow transition text-sm"
+                          >
+                            Create Shift
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </>
         )}
