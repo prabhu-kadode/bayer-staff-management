@@ -5,15 +5,20 @@ const shiftAssignment = express.Router();
 
 
 shiftAssignment.post('/shiftAssignment', async (req, res) => {
+    try {
     const assignment = await ShiftAssignment.create({
         staffId: req.body.staffId,
         shiftId: req.body.shiftId,
-        entryTime: req.body.entry,
-        exitTime: req.body.exit,
+        entryTime: req.body.entryTime,
+        exitTime: req.body.exitTime,
     });
 
     console.log("✔ Inserted:", assignment);
     res.status(201).json({ "status": "Created" });
+} catch(e){
+    console.log("Internal server error",e)
+    res.status(500).json("Internal server error")
+}
 });
 
 

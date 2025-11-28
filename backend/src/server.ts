@@ -7,7 +7,9 @@ import Shift from "./models/Shifts";
 
 import { Staff } from "./models/Staff";
 import staff from "./routes/staff";
+
 import shiftAssignment from "./routes/ShiftAssignment";
+import ShiftAssignment from "./models/ShiftAssignment";
 const app = express();
 const PORT = 3000;
 
@@ -28,6 +30,7 @@ app.use('/',shiftAssignment);
     console.log('✅ PostgreSQL database connected successfully!');
     await Shift.sync(); 
     await Staff.sync();
+    await ShiftAssignment.sync()
 
     app.listen(PORT,'0.0.0.0',() => {
       console.log(`Server running at http://localhost:${PORT}`);
